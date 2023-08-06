@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title>Show</title>
+    <style>
+        /* Paste the same CSS styles here */
+
+        /* Add custom styles for table view */
+        table {
+            width: 40%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        table td {
+            padding: 10px;
+            border-bottom: 1px solid #ccc;
+        }
+
+        div.form-section {
+            margin-bottom: 20px;
+        }
+
+        div.form-section label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        div.form-section select {
+            width: 40%;
+            padding: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        div.form-section input[type="submit"] {
+            display: block;
+            width: 200px;
+            padding: 10px;
+            background-color: #ffcc00;
+            color: #333;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+
+        div.form-section input[type="submit"]:hover {
+            background-color: #ff9900; /* Change color on hover */
+        }
+    </style>
+</head>
+<body>
+<header>
+    <h1 th:text="${book.getTitle() + ', ' + book.getAuthor() + ', ' + book.getYear()}">VALUE</h1>
+</header>
+<nav>
+    <a href="/books">Return to book menu</a>
+    <br>
+    <a href="/auth/logout">Logout</a>
+</nav>
+<main>
+    <!-- Your main content here -->
+    <div sec:authorize="hasRole('ROLE_ADMIN')">
+        This content is only shown to administrators.
+    </div>
+    <div sec:authorize="hasRole('ROLE_USER')">
+        This content is only shown to users.
+    </div>
+
+
+    <div class="form-section" th:if="${owner}">
+        <table>
+            <tr>
+                <td><span>This book was taken by:</span></td>
+                <td><span th:text="${owner.getName()}">Person Name</span></td>
+            </tr>
+        </table>
+        <form th:method="PATCH" th:action="@{/books/{id}/release(id=${book.getId()})}">
+            <input type="submit" value="Release book"/>
+        </form>
+    </div>
+
+    <div sec:authorize="hasRole('ROLE_ADMIN')" class="form-section" th:if="${users}">
+        <td><span>Book is available. Whom assign it to?</span></td>
+        <form method="POST" th:action="@{/books/{id}/assignByAdmin(id=${book.getId()})}">
+            <label for="person">Choose person</label>
+            <select th:object="${user}" th:field="*{id}" id="person">
+                <option th:each="user : ${users}" th:value="${user.getId()}" th:text="${user.getName()}">
+                </option>
+            </select>
+            <input type="submit" value="Assign book"/>
+        </form>
+    </div>
+
+    <div sec:authorize="hasRole('ROLE_USER')" class="form-section" th:if="${users}">
+        <td><span>Book is available. Do you want to take it?</span></td>
+        <form method="POST" th:action="@{/books/{id}/assignByReader(id=${book.getId()})}">
+            <input type="submit" value="Take this book"/>
+        </form>
+    </div>
+
+
+    <div class="form-section">
+        <form sec:authorize="hasRole('ROLE_ADMIN')" method="GET"
+              th:action="@{/books/{id}/edit(id=${book.getId()})}">
+            <input type="submit" value="Edit"/>
+        </form>
+        <form sec:authorize="hasRole('ROLE_ADMIN')" th:method="DELETE"
+              th:action="@{/books/delete/{id}(id=${book.getId()})}">
+            <input type="submit" value="Delete"/>
+        </form>
+    </div>
+</main>
+</body>
+</html>

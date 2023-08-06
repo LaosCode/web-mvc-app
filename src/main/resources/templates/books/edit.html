@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Update book</title>
+    <style>
+        /* Reset some default styles */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Custom styles */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        form {
+            background-color: #fff;
+            border: 1px solid #ccc;
+            padding: 20px;
+            border-radius: 5px;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        form table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        form table tr td {
+            padding: 10px;
+            border-bottom: 1px solid #ccc;
+        }
+
+        form label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        form input[type="text"] {
+            width: 100%;
+            padding: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        form div.error {
+            color: red;
+            margin-bottom: 10px;
+        }
+
+        form input[type="submit"] {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background-color: #ffcc00;
+            color: #333;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+
+        form input[type="submit"]:hover {
+            background-color: #ff9900; /* Change color on hover */
+        }
+    </style>
+</head>
+<body>
+<form th:method="PATCH" th:action="@{/books/{id}(id=${book.getId()})}" th:object="${book}">
+    <table>
+        <tr>
+            <td>
+                <label for="title">Enter book title:</label>
+            </td>
+            <td>
+                <input type="text" th:field="*{title}" id="title"/>
+                <div class="error" th:if="${#fields.hasErrors('title')}" th:errors="*{title}">Title Error</div>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label for="author">Enter author:</label>
+            </td>
+            <td>
+                <input type="text" th:field="*{author}" id="author"/>
+                <div class="error" th:if="${#fields.hasErrors('author')}" th:errors="*{author}">Author Error</div>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label for="year">Enter year:</label>
+            </td>
+            <td>
+                <input type="text" th:field="*{year}" id="year"/>
+                <div class="error" th:if="${#fields.hasErrors('year')}" th:errors="*{year}">Year Error</div>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label for="isbn">Enter ISBN:</label>
+            </td>
+            <td>
+                <input type="text" th:field="*{isbn}" id="isbn"/>
+                <div class="error" th:if="${#fields.hasErrors('isbn')}" th:errors="*{isbn}">ISBN Error</div>
+            </td>
+        </tr>
+    </table>
+
+    <input type="submit" value="Edit!"/>
+</form>
+</body>
+</html>
